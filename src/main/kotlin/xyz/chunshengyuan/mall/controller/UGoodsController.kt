@@ -1,10 +1,7 @@
 package xyz.chunshengyuan.mall.controller
 
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import xyz.chunshengyuan.mall.mapper.UserRepository
 
 /**
  * @Title: UGoodsController
@@ -15,12 +12,4 @@ import xyz.chunshengyuan.mall.mapper.UserRepository
  */
 @RestController
 @RequestMapping("/test")
-class UGoodsController @Autowired constructor(
-    val userRepository: UserRepository
-) {
-
-    @GetMapping("")
-    fun ping(): String{
-        return userRepository.getOne(1).name
-    }
-}
+class UGoodsController

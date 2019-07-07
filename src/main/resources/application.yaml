@@ -4,6 +4,10 @@ spring:
     username: mall
     password: Mall@hbitmp162611
     driver-class-name: com.mysql.jdbc.Driver
-  jpa:
-    show-sql: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
 
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true

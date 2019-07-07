@@ -25,7 +25,8 @@ jar{
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:2.0.1")
+    implementation group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: '1.2.12'
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")

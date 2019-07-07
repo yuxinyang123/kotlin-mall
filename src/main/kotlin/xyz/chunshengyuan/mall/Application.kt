@@ -1,7 +1,10 @@
 package xyz.chunshengyuan.mall
 
+import org.mybatis.spring.annotation.MapperScan
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.context.annotation.Bean
+import xyz.chunshengyuan.mall.utils.SnowFlakeIdGenerator
 
 /**
  * @Title: A
@@ -12,9 +15,17 @@ import org.springframework.boot.runApplication
  */
 
 @SpringBootApplication
-open class Application
+@MapperScan("xyz.chunshengyuan.mall.mapper")
+open class Application{
 
+    @Bean
+    open fun snowflakeGenerator(): SnowFlakeIdGenerator{
+        return SnowFlakeIdGenerator(1L,2L)
+    }
+}
 
 fun main(args:Array<String>){
+
+
     runApplication<Application>(*args)
 }

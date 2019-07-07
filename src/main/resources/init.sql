@@ -1,51 +1,62 @@
 # 用户信息表
 create table mall_user_tbl(
-    id bigint unsigned not null auto_increment,
-    name varchar(255) not null default '' comment '微信登陆直接使用微信昵称',
+    id bigint unsigned not null ,
+    name varchar(255) not null default '-' comment '微信登陆直接使用微信昵称',
     phone varchar(11) not null default  '-' comment '用户手机号',
     mail varchar(255) not null default '-' comment '用户邮箱',
     password varchar(255) not null default '' comment '用户密码，微信用户无需用户密码登陆',
     wx_open_id varchar(255) not null default '-' comment '用户微信账号',
-    wx_bind_status int not null default 0 comment '首次登陆绑定微信绑定状态',
+    wx_bind_status int not null default 0 comment '首次登陆绑定微信绑定状态，管理员账号是不需要进行微信绑定',
     add_time datetime not null default current_timestamp,
     update_time datetime not null default current_timestamp on update current_timestamp,
-    primary key (id)
+    primary key (id),
+    key idx_phone (phone) using btree ,
+    key idx_wx_open_id (wx_open_id) using btree
 );
 
 # 用户额外信息表除了微信之后还有的信息
+drop table if exists mall_user_ext_tbl;
 create table mall_user_ext_tbl(
     id bigint unsigned not null auto_increment,
-    user_id bigint unsigned not null ,
+    user_status int not null default 0 comment '用户状态',
     user_role varchar(30) not null default 'consumer' comment '不需要实现完整的权限系统',
     add_time datetime not null default current_timestamp,
     update_time datetime not null default current_timestamp on update current_timestamp,
-    primary key (id)
+    primary key (id),
+    key idx_user_id (id)
 );
 
-# 用户 权限表
-# 权限角色绑定表
-# 角色继承关系绑定
+# 用户 权限表 TODO
+# 权限角色绑定表 TODO
+# 角色继承关系绑定 TODO
 
 # 用户地址表
 create table mall_address_tbl(
     id bigint unsigned not null auto_increment,
-    address varchar(255) not null default '-',
-    user_id bigint unsigned not null ,
+    user_id bigint unsigned not null auto_increment,
+    province varchar(30) not null default '-',
+    city varchar(30) not null default '-',
+    country varchar(30) not null default '-' comment '下属乡镇，或者省市街道',
+    details varchar(255) not null default '-',
+    remark varchar(255) not null default '-' comment '地址备注',
     add_time datetime not null default current_timestamp,
     update_time datetime not null default current_timestamp on update current_timestamp,
-    primary key (id)
+    primary key (id),
+    key idx_user_id (user_id)
 );
 
 # 商品分类表
 create table mall_category_tbl(
     id bigint unsigned not null auto_increment,
     name varchar(50) not null ,
-    icon varchar(100) not null default  'TODO 默认的icon 标记',
+    icon varchar(100) not null default '-' comment 'TODO 默认的icon 标记 class ',
+    color varchar(30) not null default '#000' comment '默认的字体图标颜色',
     parent bigint unsigned not null  default 0,
     level int not null default 1 comment '分类等级，最高到两级 limit2',
     add_time datetime not null default current_timestamp,
     update_time datetime not null default current_timestamp on update current_timestamp,
-    primary key (id)
+    primary key (id),
+    key idx_parent (parent)
 );
 
 # 商品表
@@ -55,6 +66,7 @@ create table mall_goods_tbl(
     price decimal(12,4) not null default 0.0,
     introduce varchar(255) not null default '',
     details text not null comment '图文详情',
+    avatar varchar(255) not null default '' comment '首页图片',
     inventory int unsigned not null default 0 comment  '库存',
     status int not null default 0 comment '0上架 1下架',
     location varchar(255) not null default '-' comment '产地',
@@ -65,13 +77,14 @@ create table mall_goods_tbl(
     key idx_location_price(location,price)
 );
 
-# 首页轮播推荐表，
+# 轮播图推荐表，
 create table mall_banner_tbl(
     id bigint unsigned not null auto_increment,
-    goods_id bigint unsigned not null comment '商品ID',
+    goods_id bigint unsigned not null default '0' comment '商品ID',
     name varchar(255) not null default '-',
-    url varchar(255) not null ,
-    link varchar(255) not null ,
+    url varchar(255) not null default '-',
+    link varchar(255) not null default '-',
+    serial int not null default 1 comment '轮播图顺序',
     type int not null default 0 comment 'item内部商品连接link填写商品ID，extern外部连接填写url',
     location varchar(30) not null default 'index' comment 'index 首页轮播图，goods 商品轮播图',
     add_time datetime not null default current_timestamp,
@@ -135,5 +148,7 @@ create table mall_favorite_tbl(
   primary key (id)
 );
 
-
-
+# 支付状态
+# 优惠券表
+# 拼团相关表
+# 秒杀相关表
