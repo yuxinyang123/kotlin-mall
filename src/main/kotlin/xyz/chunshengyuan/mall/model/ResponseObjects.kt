@@ -20,3 +20,5 @@ fun <T> success(data:T) = BaseResponse(data = data)
 fun success() = BaseResponse(data = null)
 
 fun <T> success(code: Int,data: T) = BaseResponse(code=code,data = data)
+
+fun failed(code: Int) = BaseResponse(code = code,data = null)
