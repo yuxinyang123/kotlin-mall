@@ -1,9 +1,6 @@
 package xyz.chunshengyuan.mall.mapper
 
-import org.apache.ibatis.annotations.Insert
-import org.apache.ibatis.annotations.Mapper
-import org.apache.ibatis.annotations.Param
-import org.apache.ibatis.annotations.Select
+import org.apache.ibatis.annotations.*
 import xyz.chunshengyuan.mall.model.DetailUser
 import xyz.chunshengyuan.mall.model.UserBo
 import xyz.chunshengyuan.mall.model.UserExtBo
@@ -91,5 +88,57 @@ interface UserMapper{
         @Param("role")role:UserExtBo.UserRole
     ): Int
 
+    /**
+     * 更新用户基本信息
+     */
+    @Update(value = [
+        "<script>",
+        "update mall_user_tbl",
+        "   <set>"+
+                "<if test='user.name != null and user.name != '' '>"+
+                "    name = #{user.name}" +
+                "</if>" +
+                "<if test='user.phone != null and user.phone != '' >" +
+                "   phone = #{user.phone}" +
+                "</if>" +
+                "<if test='user.password != null and user.password != ''>" +
+                "   password = #{user.password}" +
+                "</if>" +
+                "<if test='user.wxOpenId != null and user.wxOpenId != ''>" +
+                "   wxOpenId=#{user.wxOpenId}" +
+                "</if>" +
+                "<if test='user.wxBindStatus != null>" +
+                "   wxBindStatus=#{user.wxBindStatus}" +
+                "</if>" +
+                "<if test='user.mail != null and user.mail != ''>" +
+                "   mail=#{user.mail}" +
+                "</if>"+
+        "   </set>",
+        "where id = #{user.id}",
+        "</script>"
+    ])
+    fun updateUser(@Param("user")user: UserBo): Int
 
+    /**
+     * 修改用户角色和状态
+     */
+    @Update(value =  [
+        "<script>",
+        "update mall_user_ext_tbl",
+                "<set>" +
+                "   <if test='status != null' >" +
+                        "status = #{status.code}" +
+                    "</if>" +
+                    "<if test='role'>" +
+                        "role = #{role.code}" +
+                    "</if>"+
+                "</set>" ,
+        "where id=#{id}",
+        "</script>"
+    ])
+    fun updateUserExt(
+        @Param("id")id:Long,
+        @Param("status")status:UserExtBo.UserStatus,
+        @Param("role")role:UserExtBo.UserRole
+    ):Int
 }

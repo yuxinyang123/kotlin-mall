@@ -1,6 +1,7 @@
 package xyz.chunshengyuan.mall.model
 
 import com.fasterxml.jackson.annotation.JsonValue
+import java.math.BigDecimal
 import java.util.*
 
 /**
@@ -16,13 +17,15 @@ data class UserBo(
 
     val id: Long?,
 
-    val name: String,
+    val name: String?,
 
-    val phone: String,
+    val phone: String?,
 
-    val wxOpenId: String,
+    val password: String?,
 
-    val wxBindStatus: Int
+    val wxOpenId: String?,
+
+    val wxBindStatus: Int?
 ){
 
     var mail: String? = null
@@ -53,12 +56,14 @@ data class UserExtBo(
         var code: String
     ){
         ADMIN("admin"),
+        PRECONSUMER("pre-consumer"),
         CONSUMER("consumer");
 
         companion object {
             fun valueOf(name: String): UserRole{
                 return when(name){
                     "admin" -> ADMIN
+                    "pre-consumer" -> PRECONSUMER
                     else -> CONSUMER
                 }
             }
@@ -73,10 +78,7 @@ data class UserExtBo(
     }
 }
 
-
-
-
-
+// address
 data class UserAddressBo(
     val userId:Long?,
     val province: String?,
@@ -91,6 +93,7 @@ data class UserAddressBo(
 
 }
 
+// category
 data class GoodsCategoryBo(
     val level: Int,
     val name: String,
@@ -103,3 +106,80 @@ data class GoodsCategoryBo(
     var addTime: Date? = null
     var updateTime: Date? = null
 }
+
+// goods
+data class GoodsBo(
+    val name: String? = null,
+    val price: BigDecimal = BigDecimal(0.0),
+    val type: Long? = null,
+    val introduce: String? = "",
+    val details: String? = "",
+    val avatar: String? = "",
+    val inventory: Int? = 0,
+    val location: String? = "",
+    val isEnable: Int? = 1,
+    val isDel: Int = 0
+){
+    var addTime: Date? = null
+    var updateTime: Date? = null
+}
+
+data class BannerBo(
+    val name: String? = "-",
+    val url: String? = "-",
+    val link: String? = "",
+    val serial: Int = 0,
+    val type: String? = "item",
+    val location: String? = "index"
+){
+    var addTime: Date? = null
+    var updateTime: Date? = null
+
+    enum class BannerType(
+        val code: String
+    ){
+        ITEM("item"),
+        CATEGORY("category"),
+        REMOTE("remote");
+        companion object{
+            fun valueOf(name: String): BannerType{
+                return when(name){
+                    "item" -> ITEM
+                    "category" -> CATEGORY
+                    else -> REMOTE
+                }
+            }
+        }
+    }
+}
+
+data class PushBo(
+    val icon: String? = "",
+    val coverUrl: String? = "",
+    val pushType: String? = "index",
+    val link: String? = ""
+){
+    var addTime: Date? = null
+    var updateTime: Date? = null
+
+    enum class PustType(
+        val code: String
+    ) {
+        INDEX("index"),
+        NEW("new"),
+        CATEGORY("category"),
+        HOT("hot");
+
+        companion object {
+            fun valueOf(name: String): PustType{
+                return when(name){
+                    "index" -> INDEX
+                    "hot" -> NEW
+                    "category" -> CATEGORY
+                    else -> HOT
+                }
+            }
+        }
+    }
+}
+

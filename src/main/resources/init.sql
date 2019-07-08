@@ -19,7 +19,7 @@ drop table if exists mall_user_ext_tbl;
 create table mall_user_ext_tbl(
     id bigint unsigned not null auto_increment,
     user_status int not null default 0 comment '用户状态',
-    user_role varchar(30) not null default 'consumer' comment '不需要实现完整的权限系统',
+    user_role varchar(30) not null default 'consumer' comment 'admin consumer pre-consumer不需要实现完整的权限系统',
     add_time datetime not null default current_timestamp,
     update_time datetime not null default current_timestamp on update current_timestamp,
     primary key (id),
@@ -64,11 +64,13 @@ create table mall_goods_tbl(
     id bigint unsigned not null auto_increment,
     name varchar(75) not null default '',
     price decimal(12,4) not null default 0.0,
+    type bigint unsigned not null default '',
     introduce varchar(255) not null default '',
     details text not null comment '图文详情',
     avatar varchar(255) not null default '' comment '首页图片',
     inventory int unsigned not null default 0 comment  '库存',
-    status int not null default 0 comment '0上架 1下架',
+    is_enable int not null default 1,
+    is_del int not null default 0,
     location varchar(255) not null default '-' comment '产地',
     add_time datetime not null default current_timestamp,
     update_time datetime not null  default current_timestamp on update current_timestamp,
@@ -80,30 +82,31 @@ create table mall_goods_tbl(
 # 轮播图推荐表，
 create table mall_banner_tbl(
     id bigint unsigned not null auto_increment,
-    goods_id bigint unsigned not null default '0' comment '商品ID',
+    goods_id bigint unsigned not null default 0 comment '商品ID',
     name varchar(255) not null default '-',
     url varchar(255) not null default '-',
     link varchar(255) not null default '-',
     serial int not null default 1 comment '轮播图顺序',
-    type int not null default 0 comment 'item内部商品连接link填写商品ID，extern外部连接填写url',
+    type varchar(30) not null default 'item' comment 'item category remote 远程 URL',
     location varchar(30) not null default 'index' comment 'index 首页轮播图，goods 商品轮播图',
     add_time datetime not null default current_timestamp,
     update_time datetime not null  default current_timestamp on update current_timestamp,
     primary key (id)
 );
 
-# 首页各种推荐配置
+# 首页各种商品推荐配置
 create table mall_push_tbl(
   id bigint unsigned not null auto_increment,
   icon varchar(100) not null default  '-',
   cover_url varchar(255) not null default '',
-  push_type int not null default 0 comment '0 首页推荐类别ICON，1新品推荐GoodsId 2 热门推荐GoodsId',
+  push_type varchar(30) not null default 'index' comment 'index new hot category',
   link varchar(255) not null ,
   add_time datetime not null default current_timestamp,
   update_time datetime not null  default current_timestamp on update current_timestamp,
   primary key (id)
 );
 
+### TODO
 # 订单表
 create table mall_order_tbl(
   id bigint unsigned not null auto_increment,
@@ -121,6 +124,7 @@ create table mall_order_tbl(
 create table mall_goods_order_tbl(
   id bigint unsigned not null auto_increment,
   order_id bigint unsigned not null ,
+  goods_num int not null default 1,
   goods_id bigint unsigned not null ,
   add_time datetime not null default current_timestamp,
   update_time datetime not null  default current_timestamp on update current_timestamp,
