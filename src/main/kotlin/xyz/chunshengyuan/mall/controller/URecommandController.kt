@@ -11,7 +11,7 @@ import xyz.chunshengyuan.mall.model.success
  */
 
 @RestController
-@RequestMapping("/recommand")
+@RequestMapping("/api/recommand")
 class UserRecommandController{
 
     /**

@@ -95,22 +95,22 @@ interface UserMapper{
         "<script>",
         "update mall_user_tbl",
         "   <set>"+
-                "<if test='user.name != null and user.name != '' '>"+
+                "<if test='user.name != null and user.name != \"\" '>"+
                 "    name = #{user.name}" +
                 "</if>" +
-                "<if test='user.phone != null and user.phone != '' >" +
+                "<if test='user.phone != null and user.phone != \"\"' >" +
                 "   phone = #{user.phone}" +
                 "</if>" +
-                "<if test='user.password != null and user.password != ''>" +
+                "<if test='user.password != null and user.password != \"\"'>" +
                 "   password = #{user.password}" +
                 "</if>" +
-                "<if test='user.wxOpenId != null and user.wxOpenId != ''>" +
+                "<if test='user.wxOpenId != null and user.wxOpenId != \"\"'>" +
                 "   wxOpenId=#{user.wxOpenId}" +
                 "</if>" +
-                "<if test='user.wxBindStatus != null>" +
+                "<if test='user.wxBindStatus != null' >" +
                 "   wxBindStatus=#{user.wxBindStatus}" +
                 "</if>" +
-                "<if test='user.mail != null and user.mail != ''>" +
+                "<if test='user.mail != null and user.mail != \"\"'>" +
                 "   mail=#{user.mail}" +
                 "</if>"+
         "   </set>",
@@ -129,7 +129,7 @@ interface UserMapper{
                 "   <if test='status != null' >" +
                         "status = #{status.code}" +
                     "</if>" +
-                    "<if test='role'>" +
+                    "<if test='role != null'>" +
                         "role = #{role.code}" +
                     "</if>"+
                 "</set>" ,
