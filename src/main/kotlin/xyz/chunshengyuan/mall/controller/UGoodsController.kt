@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.RestController
  * @date 2019-07-06 23:47
  */
 @RestController
-@RequestMapping("/test")
+@RequestMapping("/api/goods")
 class UGoodsController

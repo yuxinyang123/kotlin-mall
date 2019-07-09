@@ -26,10 +26,6 @@ create table mall_user_ext_tbl(
     key idx_user_id (id)
 );
 
-# 用户 权限表 TODO
-# 权限角色绑定表 TODO
-# 角色继承关系绑定 TODO
-
 # 用户地址表
 create table mall_address_tbl(
     id bigint unsigned not null auto_increment,
@@ -87,11 +83,13 @@ create table mall_banner_tbl(
     url varchar(255) not null default '-',
     link varchar(255) not null default '-',
     serial int not null default 1 comment '轮播图顺序',
-    type varchar(30) not null default 'item' comment 'item category remote 远程 URL',
+    type varchar(30) not null default 'item' comment 'item 无需连接 category link为分类ID remote 远程 URL',
     location varchar(30) not null default 'index' comment 'index 首页轮播图，goods 商品轮播图',
     add_time datetime not null default current_timestamp,
     update_time datetime not null  default current_timestamp on update current_timestamp,
-    primary key (id)
+    primary key (id),
+    key idx_type_goods_id (goods_id,type),
+    key idx_location_goods_id (goods_id,location)
 );
 
 # 首页各种商品推荐配置
@@ -99,19 +97,18 @@ create table mall_push_tbl(
   id bigint unsigned not null auto_increment,
   icon varchar(100) not null default  '-',
   cover_url varchar(255) not null default '',
-  push_type varchar(30) not null default 'index' comment 'index new hot category',
+  push_type varchar(30) not null default 'index' comment 'index 首页分类图标 new 新商品 hot 热门商品 category 热门分类',
   link varchar(255) not null ,
   add_time datetime not null default current_timestamp,
   update_time datetime not null  default current_timestamp on update current_timestamp,
   primary key (id)
 );
 
-### TODO
 # 订单表
 create table mall_order_tbl(
   id bigint unsigned not null auto_increment,
   sum decimal(20,4) not null default 0.0,
-  status int not null default 0 comment '0 init 1 wait_pay 2 wait_express 3 dispatching 4 complete 5 cancel',
+  status int not null default 0 comment '0 初始化 1 等待支付 2 等待派送 3 派送中 4 订单结束 5 订单取消',
   user_id bigint unsigned not null ,
   logistics varchar(255) not null default '-',
   carrier_name varchar(255) not null default '普通物流 中通申通',
@@ -152,6 +149,34 @@ create table mall_favorite_tbl(
   primary key (id)
 );
 
+# 商城应用表
+create table mall_application_tbl(
+    id int not null auto_increment,
+    name varchar(30) not null ,
+    link varchar(255) not null comment '商城插件内部连接，URL',
+    is_enable int not null default 0,
+    is_init int not null default 0,
+    add_time datetime not null default current_timestamp,
+    update_time datetime not null  default current_timestamp on update current_timestamp,
+    primary key (id)
+);
+
+# 个人中心配置
+create table mall_center_button(
+   id bigint unsigned not null auto_increment,
+   name varchar(30) not null ,
+   icon varchar(30) not null default '',
+   url varchar(255) not null default '',
+   link varchar(255) not null default '',
+   type varchar(30) not null default 'fonticon' comment 'fonticon 字体图标 svg url代表图片位置',
+   add_time datetime not null default current_timestamp,
+   update_time datetime not null  default current_timestamp on update current_timestamp,
+   primary key (id)
+);
+
+# 用户 权限表 TODO
+# 权限角色绑定表 TODO
+# 角色继承关系绑定 TODO
 # 支付状态
 # 优惠券表
 # 拼团相关表

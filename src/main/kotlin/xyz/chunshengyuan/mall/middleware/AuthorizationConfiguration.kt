@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTVerificationException
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -101,59 +102,55 @@ fun createToken(user: DetailUser): UserInfo?{
     )
 }
 
-/**
- * Auth filter to recognize the admin and consumer
- */
-class BaseAuthFilter(
-    val mapper: ObjectMapper
-): Filter{
-
-    override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {
-
-        val httpRequest = request as HttpServletRequest
-
-        val token = httpRequest.getHeader("X-TOKEN")
-
-        val user = parseToken(token)
-
-        if (user!!.id == -1L){
-            response!!.writer.write(mapper.writeValueAsString(
-                failed(403)
-            ))
-        }
-
-        REQ_CONTEXT.set(user);
-
-        chain!!.doFilter(request,response)
-    }
-
-}
-
 
 @Configuration
 open class FilterConfigutation @Autowired constructor(
-    val objectMapper: ObjectMapper
+    val objectMapper: ObjectMapper // CSRF 服务器需要使用
 ){
 
     @Bean
     open fun corsFilter(): FilterRegistrationBean<Filter> {
-        var bean = FilterRegistrationBean<Filter>()
-        bean.filter = object : Filter{
-            override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {
-                val httpResponse = response as HttpServletResponse
+        val bean = FilterRegistrationBean<Filter>()
+        bean.filter = Filter { request, response, chain ->
+            val httpResponse = response as HttpServletResponse
+            val httpRequest = request as HttpServletRequest
 
-                response.setHeader("","")
-                response.setHeader("","")
-                response.setHeader("","")
-                response.setHeader("","")
+            response.setHeader("Access-Control-Allow-Origin","*")
+            response.setHeader("Access-Control-Allow-Methods","POST, GET, DELETE, OPTIONS, DELETE")
+            response.setHeader("Access-Control-Allow-Headers","x-token,Content-Type, x-requested-with, X-Custom-Header, HaiYi-Access-Token")
+
+            when(request.method.toUpperCase()){
+                "OPTIONS" -> response.status = 204
+                else -> chain!!.doFilter(request,response)
             }
-
         }
         bean.setName("CORS_FILTER")
         bean.order = 0
-
+        bean.urlPatterns = listOf("/*")
         return bean
     }
 
+    @Bean
+    @ConditionalOnProperty(value = ["auth"],prefix = "system",havingValue = "true")
+    open fun baseAuthFilter(): FilterRegistrationBean<Filter>{
+        val bean = FilterRegistrationBean<Filter>()
+
+        bean.filter = Filter { request, response, chain ->
+
+            val httpRequest = request as HttpServletRequest
+
+            val token = httpRequest.getHeader("X-TOKEN")
+
+            val user = parseToken(token)
+
+            REQ_CONTEXT.set(user)
+
+            chain!!.doFilter(request,response)
+        }
+        bean.setName("JWT_FILTER")
+        bean.order = 1
+        bean.urlPatterns = listOf("/api/**")
+        return bean
+    }
 
 }

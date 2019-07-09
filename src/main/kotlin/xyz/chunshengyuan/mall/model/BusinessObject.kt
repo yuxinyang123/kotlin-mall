@@ -1,6 +1,5 @@
 package xyz.chunshengyuan.mall.model
 
-import com.fasterxml.jackson.annotation.JsonValue
 import java.math.BigDecimal
 import java.util.*
 
