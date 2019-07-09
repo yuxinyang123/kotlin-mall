@@ -56,6 +56,8 @@ data class DetailUser constructor(
 
     val userStatus: Int?=0,
 
+    var wxAvatarUrl: String? = "-",
+
     val userRole: String?= "pre-consumer"
 )
 
@@ -63,7 +65,8 @@ data class DetailUser constructor(
 data class UserInfo constructor(
     val name: String,
     val token: String,
-    val role: String
+    val role: String,
+    val avatar: String
 )
 
 // 分类树

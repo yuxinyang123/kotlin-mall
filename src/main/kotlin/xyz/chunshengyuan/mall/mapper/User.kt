@@ -23,7 +23,7 @@ interface UserMapper{
         "select",
         "U.id as id,U.name as name,U.password as password,U.phone as phone,U.mail as mail,U.wx_open_id as wx_open_id,U.wx_bind_status as wx_bind_status,",
         "E.user_status as user_status,E.user_role as user_role,",
-        "U.add_time as add_time,U.update_time as update_time",
+        "U.wx_avatar_url as wx_avatar_url , U.add_time as add_time,U.update_time as update_time",
         "from mall_user_tbl as U , mall_user_ext_tbl as E",
         "where U.id=E.id"
     ])
@@ -36,7 +36,7 @@ interface UserMapper{
         "select ",
         "U.id as id,U.name as name,U.password as password,U.phone as phone,U.mail as mail,U.wx_open_id as wx_open_id,U.wx_bind_status as wx_bind_status,",
         "E.user_status as user_status,E.user_role as user_role ,",
-        "U.add_time as add_time,U.update_time as update_time",
+        "U.wx_avatar_url as wx_avatar_url ,U.add_time as add_time,U.update_time as update_time",
         "from mall_user_tbl as U , mall_user_ext_tbl as E ",
         "where U.id=E.id and U.open_id=#{openId}"
     ])
@@ -49,7 +49,7 @@ interface UserMapper{
         "select ",
         "U.id as id,U.name as name,U.password as password,U.phone as phone,U.mail as mail,U.wx_open_id as wx_open_id,U.wx_bind_status as wx_bind_status,",
         "E.user_status as user_status,E.user_role as user_role,",
-        "U.add_time as add_time,U.update_time as update_time",
+        "U.wx_avatar_url as wx_avatar_url ,U.add_time as add_time,U.update_time as update_time",
         "from mall_user_tbl as U , mall_user_ext_tbl as E ",
         "where U.id=E.id and U.phone=#{phone}"
     ])
@@ -67,9 +67,9 @@ interface UserMapper{
      */
     @Insert(value = [
         "insert into",
-        "mall_user_tbl(id,name,phone,password,mail,wx_open_id,wx_bind_status)",
+        "mall_user_tbl(id,name,phone,password,mail,wx_open_id,wx_bind_status,wx_avatar_url)",
         "value",
-        "(#{id},#{user.name},#{user.phone},#{user.password},#{user.mail},#{user.wx_open_id},#{user.wx_bind_status})"
+        "(#{id},#{user.name},#{user.phone},#{user.password},#{user.mail},#{user.wx_open_id},#{user.wx_bind_status},#{user.wxAvatarUrl})"
     ])
     fun createUserBase(@Param("user")user: UserBo): Int
 

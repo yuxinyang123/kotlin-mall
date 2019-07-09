@@ -33,6 +33,8 @@ data class UserBo(
 
     var updateTime: Date? = null
 
+    var wxAvatarUrl: String? = "-"
+
     enum class WxBindStatus constructor(
         var code: Int
     ){
@@ -79,13 +81,14 @@ data class UserExtBo(
 
 // address
 data class UserAddressBo(
-    val userId:Long?,
-    val province: String?,
-    val city: String?,
-    val country: String?,
-    val details: String?
+    val userId:Long? = null,
+    val province: String? = null,
+    val city: String? = null,
+    val country: String? = null,
+    val details: String? = null
 ){
     val id: Long? = null
+    val isDefault: Int = 0
     var remark: String? = null
     var addTime: Date? = null
     var updateTime: Date? = null
@@ -94,10 +97,10 @@ data class UserAddressBo(
 
 // category
 data class GoodsCategoryBo(
-    val level: Int,
-    val name: String,
-    val icon: String,
-    val color: String
+    val level: Int? = null,
+    val name: String? = null,
+    val icon: String? = null,
+    val color: String? = null
 
 ){
     val id: Long? = null
@@ -122,6 +125,8 @@ data class GoodsBo(
     var addTime: Date? = null
     var updateTime: Date? = null
 }
+
+
 
 data class BannerBo(
     val name: String? = "-",

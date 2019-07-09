@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTCreator
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTVerificationException
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.web.servlet.FilterRegistrationBean
@@ -37,6 +38,7 @@ annotation class RequiredRole(val role:String){
     companion object {
         const val ADMIN_ROLE: String = "admin"
         const val COMSUMER_ROLE: String = "consumer"
+        const val PRE_CONSUMER_ROLE: String = "pre-consumer"
     }
 }
 
@@ -70,6 +72,7 @@ fun parseToken(token: String): DetailUser? {
         // only return the default user
         return DetailUser(
             userRole = UserExtBo.UserRole.PRECONSUMER.code,
+            name = "No Login user",
             id = -1
         )
     }
@@ -98,7 +101,8 @@ fun createToken(user: DetailUser): UserInfo?{
     return UserInfo(
         user.name!!,
         token,
-        user.userRole!!
+        user.userRole!!,
+        user.wxAvatarUrl ?: "-"
     )
 }
 
@@ -107,6 +111,8 @@ fun createToken(user: DetailUser): UserInfo?{
 open class FilterConfigutation @Autowired constructor(
     val objectMapper: ObjectMapper // CSRF 服务器需要使用
 ){
+
+    private val log = LoggerFactory.getLogger("AccessLogger")
 
     @Bean
     open fun corsFilter(): FilterRegistrationBean<Filter> {
@@ -117,7 +123,7 @@ open class FilterConfigutation @Autowired constructor(
 
             response.setHeader("Access-Control-Allow-Origin","*")
             response.setHeader("Access-Control-Allow-Methods","POST, GET, DELETE, OPTIONS, DELETE")
-            response.setHeader("Access-Control-Allow-Headers","x-token,Content-Type, x-requested-with, X-Custom-Header, HaiYi-Access-Token")
+            response.setHeader("Access-Control-Allow-Headers","x-token,Content-Type, x-requested-with, X-Custom-Header")
 
             when(request.method.toUpperCase()){
                 "OPTIONS" -> response.status = 204
@@ -145,11 +151,31 @@ open class FilterConfigutation @Autowired constructor(
 
             REQ_CONTEXT.set(user)
 
+            log.info("[User with name ${user?.name} and id ${user?.id} and the role is ${user?.userRole} to ${httpRequest.requestURI}]")
+
             chain!!.doFilter(request,response)
         }
         bean.setName("JWT_FILTER")
         bean.order = 1
         bean.urlPatterns = listOf("/api/**")
+        return bean
+    }
+
+    @Bean
+    open fun accessLogFilter(): FilterRegistrationBean<Filter>{
+        val bean = FilterRegistrationBean<Filter>()
+
+        bean.filter = Filter { request, response, chain ->
+
+            val httpRequest = request as HttpServletRequest
+
+            log.info("[Get a request ${httpRequest.requestURI}]")
+
+            chain!!.doFilter(request,response)
+        }
+        bean.setName("LOG_FILTER")
+        bean.order = 2
+        bean.urlPatterns = listOf("/*")
         return bean
     }
 
