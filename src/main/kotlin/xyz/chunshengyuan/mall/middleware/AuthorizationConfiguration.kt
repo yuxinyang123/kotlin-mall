@@ -5,16 +5,19 @@ import com.auth0.jwt.JWTCreator
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTVerificationException
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.aspectj.lang.JoinPoint
+import org.aspectj.lang.ProceedingJoinPoint
+import org.aspectj.lang.annotation.Around
+import org.aspectj.lang.annotation.Aspect
+import org.aspectj.lang.annotation.Pointcut
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import xyz.chunshengyuan.mall.model.DetailUser
-import xyz.chunshengyuan.mall.model.UserExtBo
-import xyz.chunshengyuan.mall.model.UserInfo
-import xyz.chunshengyuan.mall.model.failed
+import org.springframework.web.bind.annotation.RequestMapping
+import xyz.chunshengyuan.mall.model.*
 import javax.crypto.KeyGenerator
 import javax.servlet.Filter
 import javax.servlet.FilterChain
@@ -34,13 +37,36 @@ import javax.servlet.http.HttpServletResponse
 
 
 @Target(AnnotationTarget.FUNCTION)
-annotation class RequiredRole(val role:String){
+annotation class RequiredRole(
+    val role:Array<String> = [PRE_CONSUMER_ROLE]
+    ){
     companion object {
         const val ADMIN_ROLE: String = "admin"
         const val COMSUMER_ROLE: String = "consumer"
         const val PRE_CONSUMER_ROLE: String = "pre-consumer"
     }
 }
+
+@Aspect
+class RoleAspect {
+
+    private final val log = LoggerFactory.getLogger(RoleAspect::class.java)
+
+
+    @Throws(Throwable::class)
+    @Around(value = "@annotation(xyz.chunshengyuan.mall.middleware.RequiredRole)")
+    fun roleChecker(joinPoint: ProceedingJoinPoint, requiredRole: RequiredRole) : Any{
+        log.info("[ the user ${REQ_CONTEXT.get().name} will check ${REQ_CONTEXT.get().userRole}")
+
+        val settedRoles = requiredRole.role.asList().toSet()
+        val userRole = REQ_CONTEXT.get().userRole
+
+        if(settedRoles.contains(userRole))return joinPoint.proceed()
+
+        throw ApiAuthorizationException("无权限访问 ${joinPoint.signature.name}")
+    }
+}
+
 
 val REQ_CONTEXT: ThreadLocal<DetailUser> = ThreadLocal()
 
@@ -82,7 +108,7 @@ fun parseToken(token: String): DetailUser? {
 /**
  * create the JWT Token
  */
-fun createToken(user: DetailUser): UserInfo?{
+fun createToken(user: DetailUser): UserInfo{
 
     val builder = JWT.create()
     builder.withSubject("MALL_NEW")
@@ -101,7 +127,7 @@ fun createToken(user: DetailUser): UserInfo?{
     return UserInfo(
         user.name!!,
         token,
-        user.userRole!!,
+        user.userRole ?: UserExtBo.UserRole.PRECONSUMER.code,
         user.wxAvatarUrl ?: "-"
     )
 }
@@ -133,6 +159,7 @@ open class FilterConfigutation @Autowired constructor(
         bean.setName("CORS_FILTER")
         bean.order = 0
         bean.urlPatterns = listOf("/*")
+        log.info("Complete register the Cors filter")
         return bean
     }
 
@@ -158,6 +185,7 @@ open class FilterConfigutation @Autowired constructor(
         bean.setName("JWT_FILTER")
         bean.order = 1
         bean.urlPatterns = listOf("/api/**")
+        log.info("Complete register the BaseAuth JWT filter")
         return bean
     }
 
@@ -169,7 +197,7 @@ open class FilterConfigutation @Autowired constructor(
 
             val httpRequest = request as HttpServletRequest
 
-            log.info("[Get a request ${httpRequest.requestURI}]")
+            log.info("[Recive a request ${httpRequest.requestURI}]")
 
             chain!!.doFilter(request,response)
         }

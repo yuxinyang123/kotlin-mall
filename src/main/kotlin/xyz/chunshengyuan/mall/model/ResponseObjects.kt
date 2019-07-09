@@ -22,3 +22,5 @@ fun success() = BaseResponse(data = null)
 fun <T> success(code: Int,data: T) = BaseResponse(code=code,data = data)
 
 fun failed(code: Int) = BaseResponse(code = code,data = null)
+
+fun failed(code: Int, message: String?) = BaseResponse(code = code,message = message?:"Serve error",data = null)

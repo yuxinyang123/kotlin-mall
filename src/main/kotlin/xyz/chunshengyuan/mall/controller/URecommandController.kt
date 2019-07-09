@@ -49,7 +49,7 @@ class UserRecommandController{
     /**
      * add a new icon
      */
-    @RequiredRole(role = RequiredRole.ADMIN_ROLE)
+    @RequiredRole(role = [RequiredRole.ADMIN_ROLE])
     @PostMapping("/icon")
     fun setIndexIcon(): BaseResponse<Nothing>{
         return success()
@@ -58,21 +58,21 @@ class UserRecommandController{
     /**
      * update the icon
      */
-    @RequiredRole(role = RequiredRole.ADMIN_ROLE)
+    @RequiredRole(role = [RequiredRole.ADMIN_ROLE])
     @PutMapping("/icon")
     fun updateIndexIcon(): BaseResponse<Nothing> = success()
 
     /**
      * delete the icon
      */
-    @RequiredRole(role = RequiredRole.ADMIN_ROLE)
+    @RequiredRole(role = [RequiredRole.ADMIN_ROLE])
     @DeleteMapping("/icon")
     fun deleteIndexIcon(): BaseResponse<Nothing> = success()
 
     /**
      * add a new banner
      */
-    @RequiredRole(role = RequiredRole.ADMIN_ROLE)
+    @RequiredRole(role = [RequiredRole.ADMIN_ROLE])
     @PostMapping("/index")
     fun setIndexBanners(): BaseResponse<Nothing>{
         return success()
@@ -81,7 +81,7 @@ class UserRecommandController{
     /**
      * update a banner
      */
-    @RequiredRole(role = RequiredRole.ADMIN_ROLE)
+    @RequiredRole(role = [RequiredRole.ADMIN_ROLE])
     @PutMapping("/index")
     fun updateIndexBanner(): BaseResponse<Nothing>{
         return success()
@@ -90,7 +90,7 @@ class UserRecommandController{
     /**
      * delete a banner
      */
-    @RequiredRole(role = RequiredRole.ADMIN_ROLE)
+    @RequiredRole(role = [RequiredRole.ADMIN_ROLE])
     @DeleteMapping("/index")
     fun deleteIndexBanners(): BaseResponse<Nothing>{
         return success()

@@ -26,7 +26,7 @@ class TController @Autowired(required = false) constructor(
 ){
 
     @PostMapping("/user/insert")
-    fun testInsertUser(): BaseResponse<Any>{
+    fun testInsertUser(): BaseResponse<in Any>{
 
         return success(
             userMapper.selectUserDetailsAll()

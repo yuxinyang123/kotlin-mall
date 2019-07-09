@@ -1,4 +1,5 @@
 # 用户信息表
+drop table if exists mall_user_tbl;
 create table mall_user_tbl(
     id bigint unsigned not null ,
     name varchar(255) not null default '-' comment '微信登陆直接使用微信昵称',

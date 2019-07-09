@@ -27,7 +27,7 @@ interface UserMapper{
         "from mall_user_tbl as U , mall_user_ext_tbl as E",
         "where U.id=E.id"
     ])
-    fun selectUserDetailsAll(): List<DetailUser>
+    fun selectUserDetailsAll(): List<DetailUser>?
 
     /**
      * 按照 OpenId 查询用户 因为涉及到Token 签发逻辑
@@ -40,7 +40,7 @@ interface UserMapper{
         "from mall_user_tbl as U , mall_user_ext_tbl as E ",
         "where U.id=E.id and U.open_id=#{openId}"
     ])
-    fun selectUserByWxId(@Param("openId")openId: String): DetailUser
+    fun selectUserByWxId(@Param("openId")openId: String): DetailUser?
 
     /**
      * 用户账号密码登陆搜索是否正确
@@ -53,7 +53,7 @@ interface UserMapper{
         "from mall_user_tbl as U , mall_user_ext_tbl as E ",
         "where U.id=E.id and U.phone=#{phone}"
     ])
-    fun selectUserbyPhone(@Param("phone")phone: String): DetailUser
+    fun selectUserbyPhone(@Param("phone")phone: String): DetailUser?
 
     /**
      * 验证手机号是否存在

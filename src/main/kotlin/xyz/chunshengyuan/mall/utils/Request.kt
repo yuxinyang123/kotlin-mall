@@ -61,7 +61,7 @@ class WxMiniProgramClient @Autowired constructor(
         val responseString = response.body()?.string()
         log.info("[Get new Wx Token Response {}]",responseString)
 
-        WxMiniProgramClient.accessToekn = objectMapper.readValue(responseString,AccessTokenResponse::class.java).access_token!!
+        //TODO WxMiniProgramClient.accessToekn = objectMapper.readValue(responseString,AccessTokenResponse::class.java).access_token!!
 
         log.info("[Get new accssToken ${WxMiniProgramClient.accessToekn}]")
     }
