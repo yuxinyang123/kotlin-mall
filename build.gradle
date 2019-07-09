@@ -1,9 +1,8 @@
 plugins {
     id 'java'
+    id 'idea'
     id("org.springframework.boot") version "2.1.5.RELEASE"
     id("io.spring.dependency-management") version "1.0.7.RELEASE"
-    id 'org.jetbrains.kotlin.jvm' version '1.3.21'
-    id "org.jetbrains.kotlin.plugin.jpa" version "1.3.41"
 }
 
 group 'xyz.chunshengyuan'
@@ -28,26 +27,18 @@ dependencies {
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:2.0.1")
     implementation("com.auth0:java-jwt:3.2.0")
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
-
+    compileOnly 'org.projectlombok:lombok:1.18.8'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    // https://mvnrepository.com/artifact/com.auth0/java-jwt
     compile group: 'com.auth0', name: 'java-jwt', version: '3.8.1'
-    // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.11.0'
     implementation group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: '1.2.12'
 
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.8'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.8'
 
     runtimeOnly("mysql:mysql-connector-java:5.1.24")
     runtimeOnly("org.springframework.boot:spring-boot-devtools")
     testCompile group: 'junit', name: 'junit', version: '4.12'
-}
-
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
 }
