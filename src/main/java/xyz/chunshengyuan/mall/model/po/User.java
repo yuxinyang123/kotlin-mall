@@ -1,5 +1,7 @@
 package xyz.chunshengyuan.mall.model.po;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +20,9 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@TableName(value = "mall_user_tbl")
 public class User {
+    @TableId
     private Long id;
 
     private String name;
@@ -29,7 +33,7 @@ public class User {
 
     private String wxOpenId;
 
-    private String wxBindStatus;
+    private Integer wxBindStatus;
 
     private String mail;
 

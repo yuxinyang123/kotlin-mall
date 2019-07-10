@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import xyz.chunshengyuan.mall.exceptions.AdminLoginFailedException;
+import xyz.chunshengyuan.mall.exceptions.ApiOperationException;
+import xyz.chunshengyuan.mall.exceptions.WxRedirectException;
 import xyz.chunshengyuan.mall.model.BaseResponse;
 
 /**
@@ -18,12 +21,21 @@ import xyz.chunshengyuan.mall.model.BaseResponse;
 @ControllerAdvice
 public class ExceptionAdvice {
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @ExceptionHandler(AdminLoginFailedException.class)
+    @ExceptionHandler({AdminLoginFailedException.class})
     @ResponseBody
     public BaseResponse adminLoginFailedException(AdminLoginFailedException exception){
-        return BaseResponse.failed(400,exception.getMessage(),exception.getCause().toString());
+        return BaseResponse.failed(400,exception.getMessage(),exception.getLocalizedMessage());
+    }
+
+    @ExceptionHandler({WxRedirectException.class})
+    @ResponseBody
+    public BaseResponse wxRedirectException(WxRedirectException exception){
+        return BaseResponse.failed(302,exception.getMessage(),exception.getMessage());
+    }
+
+    @ExceptionHandler({ApiOperationException.class})
+    @ResponseBody
+    public BaseResponse apiOperationException(ApiOperationException exception){
+        return BaseResponse.failed(400,exception.getMessage(),exception.getRemark());
     }
 }

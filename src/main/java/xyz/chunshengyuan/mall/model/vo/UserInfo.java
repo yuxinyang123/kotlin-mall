@@ -24,4 +24,6 @@ public class UserInfo {
     private String role;
 
     private String token;
+
+    private boolean isLogin;
 }

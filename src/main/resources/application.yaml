@@ -8,11 +8,14 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
 
-mybatis:
+mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
 
 system:
   auth: true
-  wxappid: wxappid
-  wxsceret: sceret
+  wxappid: wx9697112dcef50d7a-
+  wxsceret: 237e95508cf21513b531755ab5d88f34
+logging:
+  level:
+    xyz.chunshengyuan.mall.mapper: debug

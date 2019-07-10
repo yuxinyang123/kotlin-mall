@@ -21,7 +21,7 @@ drop table if exists mall_user_ext_tbl;
 create table mall_user_ext_tbl(
     id bigint unsigned not null auto_increment,
     user_status int not null default 0 comment '用户状态',
-    user_role varchar(30) not null default 'consumer' comment 'admin consumer pre-consumer不需要实现完整的权限系统',
+    user_role varchar(30) not null default 'consumer' comment 'admin consumer pre-consumer 管理员，会员，普通用户',
     add_time datetime not null default current_timestamp,
     update_time datetime not null default current_timestamp on update current_timestamp,
     primary key (id),
@@ -32,11 +32,12 @@ create table mall_user_ext_tbl(
 create table mall_address_tbl(
     id bigint unsigned not null auto_increment,
     user_id bigint unsigned not null auto_increment,
-    province varchar(30) not null default '-',
-    is_default int not null default 0,
-    city varchar(30) not null default '-',
+    province varchar(30) not null default '-' comment '省份',
+    is_default int not null default 0 comment '是否默认',
+    connect varchar(11) not null default '-' comment '联系电话',
+    city varchar(30) not null default '-' comment '城市',
     country varchar(30) not null default '-' comment '下属乡镇，或者省市街道',
-    details varchar(255) not null default '-',
+    details varchar(255) not null default '-' comment '地址详情',
     remark varchar(255) not null default '-' comment '地址备注',
     add_time datetime not null default current_timestamp,
     update_time datetime not null default current_timestamp on update current_timestamp,
@@ -51,7 +52,7 @@ create table mall_category_tbl(
     icon varchar(100) not null default '-' comment 'TODO 默认的icon 标记 class ',
     color varchar(30) not null default '#000' comment '默认的字体图标颜色',
     parent bigint unsigned not null  default 0,
-    level int not null default 1 comment '分类等级，最高到两级 limit2',
+    level int not null default 1 comment '分类等级，最高到两级 limit2 目前字段无用',
     add_time datetime not null default current_timestamp,
     update_time datetime not null default current_timestamp on update current_timestamp,
     primary key (id),
@@ -62,9 +63,9 @@ create table mall_category_tbl(
 create table mall_goods_tbl(
     id bigint unsigned not null auto_increment,
     name varchar(75) not null default '',
-    price decimal(12,4) not null default 0.0,
-    type bigint unsigned not null default '',
-    introduce varchar(255) not null default '',
+    price decimal(12,4) not null default 0.0 comment '价格',
+    type bigint unsigned not null comment '商品分类',
+    introduce varchar(255) not null default '' comment '简介',
     details text not null comment '图文详情',
     avatar varchar(255) not null default '' comment '首页图片',
     inventory int unsigned not null default 0 comment  '库存',
@@ -86,7 +87,7 @@ create table mall_banner_tbl(
     url varchar(255) not null default '-',
     link varchar(255) not null default '-',
     serial int not null default 1 comment '轮播图顺序',
-    type varchar(30) not null default 'item' comment 'item 无需连接 category link为分类ID remote 远程 URL',
+    type varchar(30) not null default 'item' comment 'common 纯图 item 商品ID category link为分类ID remote 远程 URL',
     location varchar(30) not null default 'index' comment 'index 首页轮播图，goods 商品轮播图',
     add_time datetime not null default current_timestamp,
     update_time datetime not null  default current_timestamp on update current_timestamp,
@@ -100,7 +101,7 @@ create table mall_push_tbl(
   id bigint unsigned not null auto_increment,
   icon varchar(100) not null default  '-',
   cover_url varchar(255) not null default '',
-  push_type varchar(30) not null default 'index' comment 'index 首页分类图标 new 新商品 hot 热门商品 category 热门分类',
+  push_type varchar(30) not null default 'index' comment 'index 首页分类图标 new 新商品 hot 热门商品',
   link varchar(255) not null ,
   add_time datetime not null default current_timestamp,
   update_time datetime not null  default current_timestamp on update current_timestamp,
@@ -142,7 +143,7 @@ create table mall_favorite_tbl(
 );
 
 # 购物车商品关联表
-create table mall_favorite_tbl(
+create table mall_cart_tbl(
   id bigint unsigned not null auto_increment,
   user_id bigint unsigned not null ,
   goods_id bigint unsigned not null ,
@@ -150,6 +151,23 @@ create table mall_favorite_tbl(
   add_time datetime not null default current_timestamp,
   update_time datetime not null  default current_timestamp on update current_timestamp,
   primary key (id)
+);
+
+# 用户申请表
+create table mall_apply_tbl(
+    id bigint unsigned not null auto_increment,
+    user_id bigint unsigned not null ,
+    title varchar(255) not null default '会员申请',
+    status varchar(30) not null default 'waiting' comment 'waiting handling reject commit cancel ',
+    content varchar(255) not null ,
+    phone varchar(11) not null ,
+    name varchar(30) not null ,
+    remark varchar(30) not null default '正在处理' comment '各种记录',
+    add_time datetime not null default current_timestamp,
+    update_time datetime not null default current_timestamp on update current_timestamp,
+    primary key (id),
+    key idx_phone (phone),
+    key idx_name (name)
 );
 
 # 商城应用表

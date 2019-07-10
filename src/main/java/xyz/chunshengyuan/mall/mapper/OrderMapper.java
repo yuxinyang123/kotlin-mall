@@ -1,0 +1,74 @@
+package xyz.chunshengyuan.mall.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.*;
+import xyz.chunshengyuan.mall.model.bo.CartGoods;
+import xyz.chunshengyuan.mall.model.bo.FavoritesGoods;
+import xyz.chunshengyuan.mall.model.bo.OrderGoods;
+
+import java.util.List;
+
+/**
+ * @author leemaster
+ * @Title: OrderMapper
+ * @Package xyz.chunshengyuan.mall.mapper
+ * @Description:
+ * @date 2019-07-1016:08
+ */
+@Mapper
+public interface OrderMapper extends BaseMapper<OrderMapper> {
+
+    @Select(value = {
+            "select",
+            "G.id as id,G.name as name,G.price as price,G.introduce as introduce,G.avatar as avatar,O.add_time as add_time,O.update_time as update_time,R.goods_sum as goods_sum",
+            "from mall_order_tbl as O,mall_goods_tbl as G,mall_goods_order_tbl as R",
+            "where O.id=#{orderId} and R.goods_id = R.order_id and O.user_id=#{userId}"
+    })
+    List<OrderGoods> selectAllOrderGoods(@Param("orderId")Long orderId,@Param("userId")Long userId);
+
+
+    @Select(value = {
+            "select ",
+            "C.goods_sum as goods_sum,G.name as name," +
+                    "G.id as id ,G.price as price,G.type as type ," +
+                    "G.introduce as introduce," +
+                    "G.avatar as avatar," +
+                    "G.inventory as inventory,G.location as location," +
+                    "C.add_time as add_tim ,C.update_time as update_time ",
+            "from mall_cart_tbl as C,mall_goods_tbl as G",
+            "where C.user_id=#{userId} and C.goods_id =#{G.goods_id}"
+    })
+    List<CartGoods> selectCarts(@Param("userId")Long userId);
+
+
+    @Select(value = {
+            "select ",
+            "G.name as name,G.id as id ," +
+                    "G.price as price,G.introduce as introduce,G.type as type ," +
+                    "G.avatar as avatar,G.inventory as inventory," +
+                    "G.location as location,C.add_time as add_tim ,C.update_time as update_time ",
+            "from mall_favorite_tbl as C,mall_goods_tbl as G",
+            "where C.user_id=#{userId} and C.goods_id =#{G.goods_id}"
+    })
+    List<FavoritesGoods> selectFavorite(@Param("userId")Long userId);
+
+
+    @Insert("insert into mall_cart_tbl(goods_id,user_id,goods_sum) value(#{goodsId},#{userId},#{num})")
+    Integer insertCart(@Param("goodsId") Long goodsId,@Param("userId")Long userId,@Param("num")Integer num);
+
+    @Insert("insert into mall_favorite_tbl(goods_id,user_id) value(#{goodsId},#{userId})")
+    Integer insertFavorite(@Param("goodsId") Long goodsId,@Param("userId")Long userId);
+
+
+    @Update("update mall_cart_tbl set goods_sum=#{num} where goods_id=#{goodsId} and user_id =#{userId}")
+    Integer updateCart(@Param("goodsId") Long goodsId,@Param("userId")Long userId,@Param("num")Integer num);
+
+
+    @Delete("delete from mall_cart_tbl where goods_id =#{goodsId} and user_id =#{userId}")
+    Integer deleteCart(@Param("goodsId") Long goodsId,@Param("userId")Long userId);
+
+    @Delete("delete from mall_favorite_tbl where goods_id =#{goodsId} and user_id =#{userId}")
+    Integer deleteFavorite(@Param("goodsId") Long goodsId,@Param("userId")Long userId);
+
+
+}

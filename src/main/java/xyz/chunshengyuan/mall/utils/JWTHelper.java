@@ -46,7 +46,8 @@ public class JWTHelper {
                 user.getName(),
                 user.getWxAvatarUrl(),
                 user.getUserRole(),
-                token
+                token,
+                true
         );
     }
 
