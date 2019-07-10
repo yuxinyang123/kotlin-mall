@@ -7,6 +7,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.apache.logging.log4j.util.Strings;
 import xyz.chunshengyuan.mall.constrant.UserRole;
 import xyz.chunshengyuan.mall.model.bo.DetailUser;
 import xyz.chunshengyuan.mall.model.vo.UserInfo;
@@ -52,7 +53,13 @@ public class JWTHelper {
     }
 
     public static DetailUser parseToken(String token) {
-
+        if (Strings.isBlank(token)){
+            DetailUser user = new DetailUser();
+            user.setId(-1L);
+            user.setUserRole(UserRole.PRECONSUMER.code);
+            user.setName("No Login user");
+            return user;
+        }
         try {
             DecodedJWT result = VERIFYCATION.verify(token);
 

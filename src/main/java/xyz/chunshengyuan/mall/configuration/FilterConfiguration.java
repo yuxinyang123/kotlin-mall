@@ -49,7 +49,7 @@ public class FilterConfiguration {
 
         bean.setOrder(1);
         bean.setName("CORS FILTER");
-        bean.setUrlPatterns(Collections.singletonList("/**"));
+        bean.setUrlPatterns(Collections.singletonList("/*"));
 
         return bean;
     }
@@ -74,7 +74,7 @@ public class FilterConfiguration {
 
         bean.setOrder(10);
         bean.setName("AUTH FILTER");
-        bean.setUrlPatterns(Collections.singletonList("/api/**"));
+        bean.setUrlPatterns(Collections.singletonList("/api/*"));
 
         return bean;
     }

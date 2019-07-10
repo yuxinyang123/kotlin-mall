@@ -1,6 +1,8 @@
 package xyz.chunshengyuan.mall.controller;
 
 import org.springframework.web.bind.annotation.*;
+import xyz.chunshengyuan.mall.configuration.RequiredRole;
+import xyz.chunshengyuan.mall.constrant.UserRole;
 import xyz.chunshengyuan.mall.exceptions.AdminLoginFailedException;
 import xyz.chunshengyuan.mall.exceptions.WxRedirectException;
 import xyz.chunshengyuan.mall.model.BaseResponse;

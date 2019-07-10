@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.chunshengyuan.mall.configuration.RequiredRole;
+import xyz.chunshengyuan.mall.constrant.UserRole;
 import xyz.chunshengyuan.mall.model.BaseResponse;
 import xyz.chunshengyuan.mall.model.vo.GoodsQuery;
 import xyz.chunshengyuan.mall.service.GoodsService;
@@ -28,6 +30,8 @@ public class GoodsController {
     GoodsService goodsService;
 
     @GetMapping("")
+
+    @RequiredRole(roles = {UserRole.ADMIN,UserRole.PRECONSUMER})
     public BaseResponse getAllGoods(GoodsQuery query){
         return BaseResponse.succes(goodsService.selectAllGoods(query));
     }

@@ -1,12 +1,10 @@
 package xyz.chunshengyuan.mall.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import xyz.chunshengyuan.mall.exceptions.AdminLoginFailedException;
+import xyz.chunshengyuan.mall.exceptions.ApiAuthException;
 import xyz.chunshengyuan.mall.exceptions.ApiOperationException;
 import xyz.chunshengyuan.mall.exceptions.WxRedirectException;
 import xyz.chunshengyuan.mall.model.BaseResponse;
@@ -38,4 +36,11 @@ public class ExceptionAdvice {
     public BaseResponse apiOperationException(ApiOperationException exception){
         return BaseResponse.failed(400,exception.getMessage(),exception.getRemark());
     }
+
+    @ExceptionHandler({ApiAuthException.class})
+    @ResponseBody
+    public BaseResponse apiAuthException(ApiAuthException exeption){
+        return BaseResponse.failed(403,exeption.getMessage(),exeption.getMessage());
+    }
+
 }

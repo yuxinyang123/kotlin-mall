@@ -1,10 +1,15 @@
 package xyz.chunshengyuan.mall.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Service;
 import xyz.chunshengyuan.mall.model.bo.CartGoods;
 import xyz.chunshengyuan.mall.model.bo.FavoritesGoods;
 import xyz.chunshengyuan.mall.model.bo.OrderGoods;
+import xyz.chunshengyuan.mall.model.bo.UserOrder;
+import xyz.chunshengyuan.mall.model.po.Order;
 
 import java.util.List;
 
@@ -16,16 +21,41 @@ import java.util.List;
  * @date 2019-07-1016:08
  */
 @Mapper
-public interface OrderMapper extends BaseMapper<OrderMapper> {
+public interface OrderMapper extends BaseMapper<Order> {
 
     @Select(value = {
             "select",
             "G.id as id,G.name as name,G.price as price,G.introduce as introduce,G.avatar as avatar,O.add_time as add_time,O.update_time as update_time,R.goods_sum as goods_sum",
             "from mall_order_tbl as O,mall_goods_tbl as G,mall_goods_order_tbl as R",
-            "where O.id=#{orderId} and R.goods_id = R.order_id and O.user_id=#{userId}"
+            "where R.goods_id = R.order_id and O.user_id=#{userId} order by O.add_time desc "
     })
-    List<OrderGoods> selectAllOrderGoods(@Param("orderId")Long orderId,@Param("userId")Long userId);
+    IPage<OrderGoods> selectAllOrderGoods(Page page,@Param("userId")Long userId);
 
+    @Select(value = {
+            "select",
+            "G.id as id,G.name as name,G.price as price,G.introduce as introduce,G.avatar as avatar,O.add_time as add_time,O.update_time as update_time,R.goods_sum as goods_sum",
+            "from mall_order_tbl as O,mall_goods_tbl as G,mall_goods_order_tbl as R",
+            "where O.id=#{orderId} and R.goods_id = R.order_id and O.user_id=#{userId} order by O.add_time desc "
+    })
+    OrderGoods selectOrderById(@Param("orderId")Long orderId,@Param("userId")Long userId);
+
+
+
+    @Select(value = {
+            "select",
+            "O.id as id,O.sum as order_sum,O.status as status,O.logistics as logistics, O.carrier_name as carrier_name,U.name as user_ame,U.phone as user_phone",
+            "from mall_order_tbl as O,mall_user_tbl as U",
+            "where O.user_id=U.id order by O.add_time desc"
+    })
+    IPage<UserOrder> selectAllUserOrders(Page page);
+
+    @Select(value = {
+            "select",
+            "O.id as id,O.sum as order_sum,O.status as status,O.logistics as logistics, O.carrier_name as carrier_name,U.name as user_ame,U.phone as user_phone",
+            "from mall_order_tbl as O,mall_user_tbl as U",
+            "where U.id = #{userId} and O.user_id=U.id order by O.add_time desc"
+    })
+    IPage<UserOrder> selectAllUserOrdersByuserID(Page page, @Param("userId")Long userId);
 
     @Select(value = {
             "select ",
@@ -46,7 +76,7 @@ public interface OrderMapper extends BaseMapper<OrderMapper> {
             "G.name as name,G.id as id ," +
                     "G.price as price,G.introduce as introduce,G.type as type ," +
                     "G.avatar as avatar,G.inventory as inventory," +
-                    "G.location as location,C.add_time as add_tim ,C.update_time as update_time ",
+                    "G.location as location,C.add_time as add_time ,C.update_time as update_time ",
             "from mall_favorite_tbl as C,mall_goods_tbl as G",
             "where C.user_id=#{userId} and C.goods_id =#{G.goods_id}"
     })
