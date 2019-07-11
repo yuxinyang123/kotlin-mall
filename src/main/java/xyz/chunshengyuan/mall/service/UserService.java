@@ -73,7 +73,7 @@ public class UserService {
             WxUserSessionResponse response =  wxHttpService.wxCode2Session(code);
 
             if (Objects.nonNull(response)){
-                if (response.getErrcode().equals("40029")){
+                if ("40029".equals(response.getErrcode())){
                     throw new AdminLoginFailedException("用户请求超时，请重新登陆");
                 }
                 String openId = response.getOpenid();
