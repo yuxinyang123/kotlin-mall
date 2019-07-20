@@ -50,15 +50,15 @@ public class GoodsService {
     @Resource
     GoodsMapper goodsMapper;
 
-    public GoodsListVo selectAllGoods(GoodsQuery query){
+    public GoodsListVo selectAllGoods(GoodsQuery query) {
         Page<Goods> pageDefinition = new Page<>();
         pageDefinition.setCurrent(query.getOffset());
         pageDefinition.setSize(query.getLimit());
         IPage<Goods> page = goodsPlusMapper.selectPage(
                 pageDefinition,
                 Wrappers.<Goods>query()
-                .and(query.getType() != null,i -> i.eq("type",query.getType()))
-                        .and(query.getType() != null,i -> i.like("name","%" + query.getType() + "%"))
+                        .and(query.getType() != null, i -> i.eq("type", query.getType()))
+                        .and(query.getName() != null, i -> i.like("name", "%" + query.getName() + "%"))
                         .and(
                                 query.getTopPrice() != null && query.getLowPrice() != null,
                                 i -> i.between(
@@ -66,22 +66,23 @@ public class GoodsService {
                                         query.getLowPrice(),
                                         query.getTopPrice()
                                 )
-                        ).and(
+                        )
+                        .and(
                                 query.getLocation() != null,
-                        i -> i.eq("location",query.getLocation())
-                )
+                                i -> i.eq("location", query.getLocation())
+                        )
 
         );
 
-        if(page.getTotal() == 0L){
-            return new GoodsListVo(page.getTotal(),new ArrayList<>());
+        if (page.getTotal() == 0L) {
+            return new GoodsListVo(page.getTotal(), new ArrayList<>());
         }
 
         List<Long> types = page.getRecords().stream().map(Goods::getType).collect(Collectors.toList());
 
         List<Long> goodsIds = page.getRecords().stream().map(Goods::getId).collect(Collectors.toList());
 
-        Map<Long,Category> categories = categoryPlusMapper.selectBatchIds(types)
+        Map<Long, Category> categories = categoryPlusMapper.selectBatchIds(types)
                 .stream().collect(
                         Collectors.toMap(
                                 Category::getId,
@@ -89,7 +90,7 @@ public class GoodsService {
                         )
                 );
 
-        Map<Long,List<Banner>> banners = bannerPlusMapper.selectList(
+        Map<Long, List<Banner>> banners = bannerPlusMapper.selectList(
                 Wrappers.<Banner>query().in(
                         "goods_id",
                         goodsIds
@@ -118,10 +119,10 @@ public class GoodsService {
                     return info;
                 }).collect(Collectors.toList());
 
-        return new GoodsListVo(page.getTotal(),goodsInfos);
+        return new GoodsListVo(page.getTotal(), goodsInfos);
     }
 
-    private Goods handleGoodsForm(GoodsForm goodsForm){
+    private Goods handleGoodsForm(GoodsForm goodsForm) {
         Goods goods = new Goods();
         goods.setName(goodsForm.getName());
         goods.setDetails(goodsForm.getDetails());
@@ -136,10 +137,10 @@ public class GoodsService {
         return goods;
     }
 
-    private List<Banner> handleBanner(List<String> banners,Long id,String name){
+    private List<Banner> handleBanner(List<String> banners, Long id, String name) {
         List<Banner> banners1 = new ArrayList<>();
 
-        for(int i = 0; i < banners.size();i++){
+        for (int i = 0; i < banners.size(); i++) {
             Banner banner = new Banner();
             banner.setGoodsId(id);
             banner.setSerial(i);
@@ -154,7 +155,7 @@ public class GoodsService {
     }
 
     @Transactional
-    public void addNewGoods(GoodsForm goodsForm){
+    public void addNewGoods(GoodsForm goodsForm) {
         Goods goods = handleGoodsForm(goodsForm);
         Long id = snowFlakeIdGenerator.nextId();
         goods.setId(id);
@@ -164,45 +165,45 @@ public class GoodsService {
                 id,
                 goodsForm.getName()
         );
-        for(Banner banner : banners){
+        for (Banner banner : banners) {
             bannerPlusMapper.insert(banner);
         }
     }
 
     @Transactional
-    public void updateGoode(GoodsForm form,Long id){
+    public void updateGoode(GoodsForm form, Long id) {
         Goods goods = handleGoodsForm(form);
         goods.setId(id);
         Goods dbGoods = goodsPlusMapper.selectById(id);
-        if(dbGoods.getName().equals(goods.getName())){
+        if (dbGoods.getName().equals(goods.getName())) {
             goods.setName(dbGoods.getName());
         }
         goodsPlusMapper.updateById(goods);
-        if(form.getBanners() != null || form.getBanners().size() != 0){
+        if (form.getBanners() != null || form.getBanners().size() != 0) {
             bannerPlusMapper.delete(
-                    Wrappers.<Banner>query().eq("goods_id",id)
+                    Wrappers.<Banner>query().eq("goods_id", id)
             );
             List<Banner> banners = handleBanner(
                     form.getBanners(),
                     id,
                     goods.getName()
             );
-            for(Banner banner : banners){
+            for (Banner banner : banners) {
                 bannerPlusMapper.insert(banner);
             }
         }
     }
 
     @Transactional
-    public void deleteGoods(Long id){
+    public void deleteGoods(Long id) {
         bannerPlusMapper.delete(
-                Wrappers.<Banner>query().eq("goods_id",id)
+                Wrappers.<Banner>query().eq("goods_id", id)
         );
         goodsPlusMapper.deleteById(id);
     }
 
     @Transactional
-    public void createPush(Long goodsId, PushType type){
+    public void createPush(Long goodsId, PushType type) {
         Goods goods = goodsPlusMapper.selectById(goodsId);
         Push push = new Push();
         push.setIcon("-");
@@ -212,25 +213,25 @@ public class GoodsService {
         pushMapper.insert(push);
     }
 
-    public PushListVo listPush(Long limit,Long offset,String type){
+    public PushListVo listPush(Long limit, Long offset, String type) {
         Page<Push> pushPage = new Page<>();
         pushPage.setCurrent(offset);
         pushPage.setSize(limit);
         IPage<Push> pushIPage = pushMapper.selectPage(
                 pushPage,
                 Wrappers.<Push>query()
-                .eq("push_type",type)
+                        .eq("push_type", type)
         );
 
-        if (pushIPage.getTotal() == 0){
-            return new PushListVo(0L,new ArrayList<>());
+        if (pushIPage.getTotal() == 0) {
+            return new PushListVo(0L, new ArrayList<>());
         }
 
-        List<Long> goodsIds  = pushIPage.getRecords().stream().map(
+        List<Long> goodsIds = pushIPage.getRecords().stream().map(
                 item -> Long.valueOf(item.getLink())
         ).collect(Collectors.toList());
 
-        Map<String,Goods> goodsMap = goodsPlusMapper.selectBatchIds(goodsIds)
+        Map<String, Goods> goodsMap = goodsPlusMapper.selectBatchIds(goodsIds)
                 .stream().collect(
                         Collectors.toMap(
                                 item -> item.getId().toString(),
@@ -239,24 +240,24 @@ public class GoodsService {
                 );
 
         return new PushListVo(
-          pushIPage.getTotal(),
-          pushIPage.getRecords().stream().map(
-                  (item) -> {
-                      PushInfoVo infoVo = new PushInfoVo();
-                      infoVo.setGoods(goodsMap.get(item.getLink()));
-                      infoVo.setPush(item);
-                      return infoVo;
-                  }
-          )      .collect(Collectors.toList())
+                pushIPage.getTotal(),
+                pushIPage.getRecords().stream().map(
+                        (item) -> {
+                            PushInfoVo infoVo = new PushInfoVo();
+                            infoVo.setGoods(goodsMap.get(item.getLink()));
+                            infoVo.setPush(item);
+                            return infoVo;
+                        }
+                ).collect(Collectors.toList())
         );
     }
 
     @Transactional
-    public void deletePush(List<Long> pushId){
+    public void deletePush(List<Long> pushId) {
         pushMapper.deleteBatchIds(pushId);
     }
 
-    public List<String> selectGoodsLocation(Long typeId){
+    public List<String> selectGoodsLocation(Long typeId) {
         return goodsPlusMapper.selectLocation(typeId);
     }
 

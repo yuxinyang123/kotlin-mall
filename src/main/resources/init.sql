@@ -14,7 +14,8 @@ create table mall_user_tbl(
     primary key (id),
     key idx_phone (phone) using btree ,
     key idx_wx_open_id (wx_open_id) using btree
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 # 用户额外信息表除了微信之后还有的信息
 drop table if exists mall_user_ext_tbl;
@@ -26,12 +27,15 @@ create table mall_user_ext_tbl(
     update_time datetime not null default current_timestamp on update current_timestamp,
     primary key (id),
     key idx_user_id (id)
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 # 用户地址表
+drop table if exists mall_address_tbl;
 create table mall_address_tbl(
     id bigint unsigned not null auto_increment,
-    user_id bigint unsigned not null auto_increment,
+    user_id bigint unsigned not null,
+    name varchar(10) not null default '-' comment '收货人姓名',
     province varchar(30) not null default '-' comment '省份',
     is_default int not null default 0 comment '是否默认',
     connect varchar(11) not null default '-' comment '联系电话',
@@ -43,9 +47,11 @@ create table mall_address_tbl(
     update_time datetime not null default current_timestamp on update current_timestamp,
     primary key (id),
     key idx_user_id (user_id)
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 # 商品分类表
+drop table if exists mall_category_tbl;
 create table mall_category_tbl(
     id bigint unsigned not null auto_increment,
     name varchar(50) not null ,
@@ -57,7 +63,8 @@ create table mall_category_tbl(
     update_time datetime not null default current_timestamp on update current_timestamp,
     primary key (id),
     key idx_parent (parent)
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 # 商品表
 create table mall_goods_tbl(
@@ -77,9 +84,10 @@ create table mall_goods_tbl(
     primary key (id),
     key idx_name (name),
     key idx_location_price(location,price)
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
-# 轮播图推荐表，
+# 轮播图推荐表
 create table mall_banner_tbl(
     id bigint unsigned not null auto_increment,
     goods_id bigint unsigned not null default 0 comment '商品ID',
@@ -94,7 +102,8 @@ create table mall_banner_tbl(
     primary key (id),
     key idx_type_goods_id (goods_id,type),
     key idx_location_goods_id (goods_id,location)
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 # 首页各种商品推荐配置
 create table mall_push_tbl(
@@ -106,20 +115,23 @@ create table mall_push_tbl(
   add_time datetime not null default current_timestamp,
   update_time datetime not null  default current_timestamp on update current_timestamp,
   primary key (id)
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 # 订单表
 create table mall_order_tbl(
   id bigint unsigned not null auto_increment,
   sum decimal(20,4) not null default 0.0,
   status int not null default 0 comment '0 初始化 1 等待支付 2 等待派送 3 派送中 4 订单结束 5 订单取消',
+  address_id bigint not null,
   user_id bigint unsigned not null ,
   logistics varchar(255) not null default '-',
   carrier_name varchar(255) not null default '普通物流 中通申通',
   add_time datetime not null default current_timestamp,
   update_time datetime not null  default current_timestamp on update current_timestamp,
   primary key (id)
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 # 订单商品关联表
 create table mall_goods_order_tbl(
@@ -130,7 +142,8 @@ create table mall_goods_order_tbl(
   add_time datetime not null default current_timestamp,
   update_time datetime not null  default current_timestamp on update current_timestamp,
   primary key (id)
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 # 收藏商品关联表
 create table mall_favorite_tbl(
@@ -140,7 +153,8 @@ create table mall_favorite_tbl(
     add_time datetime not null default current_timestamp,
     update_time datetime not null  default current_timestamp on update current_timestamp,
     primary key (id)
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 # 购物车商品关联表
 create table mall_cart_tbl(
@@ -151,7 +165,8 @@ create table mall_cart_tbl(
   add_time datetime not null default current_timestamp,
   update_time datetime not null  default current_timestamp on update current_timestamp,
   primary key (id)
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 # 用户申请表
 create table mall_apply_tbl(
@@ -168,7 +183,8 @@ create table mall_apply_tbl(
     primary key (id),
     key idx_phone (phone),
     key idx_name (name)
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 # 商城应用表
 create table mall_application_tbl(
@@ -180,7 +196,8 @@ create table mall_application_tbl(
     add_time datetime not null default current_timestamp,
     update_time datetime not null  default current_timestamp on update current_timestamp,
     primary key (id)
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 # 个人中心配置
 create table mall_center_button(
@@ -193,7 +210,8 @@ create table mall_center_button(
    add_time datetime not null default current_timestamp,
    update_time datetime not null  default current_timestamp on update current_timestamp,
    primary key (id)
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 # 用户 权限表 TODO
 # 权限角色绑定表 TODO

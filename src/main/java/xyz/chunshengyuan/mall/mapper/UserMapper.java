@@ -37,7 +37,7 @@ public interface UserMapper {
             "E.user_status as user_status,E.user_role as user_role ,",
             "U.wx_avatar_url as wx_avatar_url ,U.add_time as add_time,U.update_time as update_time",
             "from mall_user_tbl as U , mall_user_ext_tbl as E ",
-            "where U.id=E.id and U.open_id=#{openId}"
+            "where U.id=E.id and U.wx_open_id=#{openId}"
     })
     DetailUser selectUserByWxId(@Param("openId")String openId);
 

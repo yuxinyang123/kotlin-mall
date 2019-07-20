@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import xyz.chunshengyuan.mall.utils.Long2StringConveter;
+import xyz.chunshengyuan.mall.utils.String2LongConverter;
 
 import java.util.Date;
 
@@ -24,7 +25,7 @@ import java.util.Date;
 @TableName(value = "mall_apply_tbl")
 public class Apply {
 
-    @JsonDeserialize(converter = Long2StringConveter.class)
+    @JsonDeserialize(converter = String2LongConverter.class)
     @JsonSerialize(converter = Long2StringConveter.class)
     @TableId
     private Long id;

@@ -34,6 +34,8 @@ public class Order {
 
     private Integer status;
 
+    private Long addressId;
+
     private Long userId;
 
     private String logistics;

@@ -26,4 +26,5 @@ public class GoodsQuery {
 
     private Integer offset = 1;
 
+
 }

@@ -28,7 +28,7 @@ public class ExceptionAdvice {
     @ExceptionHandler({WxRedirectException.class})
     @ResponseBody
     public BaseResponse wxRedirectException(WxRedirectException exception){
-        return BaseResponse.failed(302,exception.getMessage(),exception.getMessage());
+        return BaseResponse.failed(302,exception.getMessage(),exception.getId());
     }
 
     @ExceptionHandler({ApiOperationException.class})

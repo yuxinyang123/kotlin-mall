@@ -18,6 +18,8 @@ public class OrderForm {
 
     private Long userId;
 
+    private Long addressId;
+
     private List<Entry> order;
 
     @Data

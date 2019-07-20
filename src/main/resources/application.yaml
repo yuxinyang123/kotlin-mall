@@ -1,8 +1,11 @@
 spring:
   datasource:
-    url: jdbc:mysql://123.207.24.223:3306/mall
-    username: mall
-    password: Mall@hbitmp162611
+#    url: jdbc:mysql://123.207.24.223:3306/mall
+#    username: mall
+#    password: Mall@hbitmp162611
+    url: jdbc:mysql://39.106.174.163/newmall?useUnicode=true&characterEncoding=utf-8
+    username: remote
+    password: 789456
     driver-class-name: com.mysql.jdbc.Driver
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -11,11 +14,12 @@ spring:
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
-
 system:
   auth: true
-  wxappid: wx9697112dcef50d7a-
+  wxappid: wx9697112dcef50d7a
   wxsceret: 237e95508cf21513b531755ab5d88f34
 logging:
   level:
     xyz.chunshengyuan.mall.mapper: debug
+server:
+  port: 8087

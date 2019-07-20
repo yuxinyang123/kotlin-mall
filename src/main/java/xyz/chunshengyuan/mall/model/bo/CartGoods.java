@@ -46,5 +46,5 @@ public class CartGoods {
 
     private Date updateTime;
 
-    private Integer goodsSum;
+    private Integer goodsNum;
 }
