@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import xyz.chunshengyuan.mall.utils.Long2StringConveter;
+import xyz.chunshengyuan.mall.utils.String2LongConverter;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -23,7 +24,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class OrderGoods {
 
-    @JsonDeserialize(converter = Long2StringConveter.class)
+    @JsonDeserialize(converter = String2LongConverter.class)
     @JsonSerialize(converter = Long2StringConveter.class)
     private Long id;
 

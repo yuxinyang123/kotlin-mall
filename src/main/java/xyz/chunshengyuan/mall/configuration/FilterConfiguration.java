@@ -44,6 +44,8 @@ public class FilterConfiguration {
                 response.getWriter().close();
             }else{
                 chain.doFilter(req,res);
+                //防止线程池中下一次重复使用threadlocal中内容
+                RequestContext.remove();
             }
         });
 

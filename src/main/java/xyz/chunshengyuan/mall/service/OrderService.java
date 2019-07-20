@@ -161,7 +161,7 @@ public class OrderService {
         }
     }
 
-    public OrderGoods getUserOrderById(Long orderId) throws ApiOperationException {
+    public List<OrderGoods> getUserOrderById(Long orderId) throws ApiOperationException {
         try {
             Long userId = RequestContext.get().getId();
             return orderMapper.selectOrderById(orderId, userId);

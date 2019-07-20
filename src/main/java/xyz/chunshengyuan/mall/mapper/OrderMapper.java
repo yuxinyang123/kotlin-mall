@@ -25,7 +25,7 @@ public interface OrderMapper extends BaseMapper<Order> {
 
     @Select(value = {
             "select",
-            "G.id as id,G.name as name,G.price as price,G.introduce as introduce,G.avatar as avatar,O.add_time as add_time,O.update_time as update_time,R.goods_sum as goods_sum",
+            "G.id as id,G.name as name,G.price as price,G.introduce as introduce,G.avatar as avatar,O.add_time as add_time,O.update_time as update_time,R.goods_num as goods_num",
             "from mall_order_tbl as O,mall_goods_tbl as G,mall_goods_order_tbl as R",
             "where R.goods_id = G.id and O.id = R.order_id and O.user_id=#{userId} order by O.add_time desc "
     })
@@ -37,7 +37,7 @@ public interface OrderMapper extends BaseMapper<Order> {
             "from mall_order_tbl as O,mall_goods_tbl as G,mall_goods_order_tbl as R",
             "where O.id=#{orderId} and R.goods_id = G.id and O.id = R.order_id and O.user_id=#{userId} order by O.add_time desc "
     })
-    OrderGoods selectOrderById(@Param("orderId")Long orderId,@Param("userId")Long userId);
+    List<OrderGoods> selectOrderById(@Param("orderId")Long orderId,@Param("userId")Long userId);
 
 
 
